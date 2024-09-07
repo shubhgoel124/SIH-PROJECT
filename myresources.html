@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Resources</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --text-color: #f8fafc;
+            --delete-color: #e11d48;
+            --delete-hover-color: #be123c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+        }
+
+        .resource-upload, .resources-list {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .resource-upload:hover, .resources-list:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .resource-upload input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--accent-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            transition: background-color 0.3s ease;
+        }
+
+        .resource-upload input[type="file"]:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-upload {
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-upload:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .btn-upload::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn-upload:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0, 0); opacity: 1; }
+            20% { transform: scale(25, 25); opacity: 1; }
+            100% { opacity: 0; transform: scale(40, 40); }
+        }
+
+        .resource-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-item:hover {
+            transform: translateX(5px);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .resource-name {
+            font-size: 1.2em;
+            flex: 1;
+        }
+
+        .btn-delete {
+            padding: 8px 16px;
+            background-color: var(--delete-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: var(--delete-hover-color);
+            transform: scale(1.05);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .resource-item { flex-direction: column; align-items: flex-start; }
+            .btn-delete { margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="floating-shapes"></div>
+        <h1>My Resources</h1>
+
+        <div class="resource-upload">
+            <h2>Upload New Resource</h2>
+            <input type="file" id="resourceUpload">
+            <button class="btn-upload" onclick="uploadResource()">Upload Resource</button>
+        </div>
+
+        <div class="resources-list">
+            <h2>Your Uploaded Resources</h2>
+            <div id="resourcesList">
+                <div class="resource-item">
+                    <div class="resource-name">Data Structures Lecture Notes.pdf</div>
+                    <button class="btn-delete" onclick="deleteResource(this)">Delete</button>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-name">Machine Learning Workshop.pptx</div>
+                    <button class="btn-delete" onclick="deleteResource(this)">Delete</button>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-name">Advanced Algorithms Textbook.docx</div>
+                    <button class="btn-delete" onclick="deleteResource(this)">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <a href="in.html" class="back-link">Back to Dashboard</a>
+    </div>
+
+    <script>
+       
+        const floatingShapes = document.createElement('div');
+        floatingShapes.className = 'floating-shapes';
+        document.querySelector('.container').appendChild(floatingShapes);
+
+        for (let i = 0; i < 50; i++) {
+            const shape = document.createElement('div');
+            shape.className = 'shape';
+            shape.style.width = shape.style.height = `${Math.random() * 20 + 5}px`;
+            shape.style.left = `${Math.random() * 100}%`;
+            shape.style.top = `${Math.random() * 100}%`;
+            floatingShapes.appendChild(shape);
+        }
+
+        gsap.to('.shape', {
+            y: 'random(-100, 100)',
+            x: 'random(-100, 100)',
+            scale: 'random(0.5, 1.5)',
+            duration: 'random(10, 20)',
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut',
+            stagger: { each: 0.1, from: 'random' }
+        });
+
+       
+        gsap.from('.container', {
+            duration: 1.5,
+            opacity: 0,
+            y: 50,
+            scale: 0.9,
+            ease: 'elastic.out(1, 0.7)'
+        });
+
+        gsap.from('.resource-item', {
+            duration: 0.8,
+            opacity: 0,
+            x: -50,
+            stagger: 0.2,
+            ease: 'power3.out'
+        });
+
+        function uploadResource() {
+            const fileInput = document.getElementById('resourceUpload');
+            const fileName = fileInput.value.split('\\').pop();
+            if (fileName) {
+                const newResource = document.createElement('div');
+                newResource.className = 'resource-item';
+                newResource.innerHTML = `
+                    <div class="resource-name">${fileName}</div>
+                    <button class="btn-delete" onclick="deleteResource(this)">Delete</button>
+                `;
+                
+                document.getElementById('resourcesList').appendChild(newResource);
+                
+                gsap.from(newResource, {
+                    duration: 0.5,
+                    opacity: 0,
+                    x: -50,
+                    ease: 'power3.out'
+                });
+
+                alert('Resource "' + fileName + '" uploaded successfully!');
+                fileInput.value = ''; 
+            } else {
+                alert('Please select a file to upload.');
+            }
+        }
+
+        function deleteResource(button) {
+            const resourceItem = button.parentElement;
+            const resourceName = resourceItem.querySelector('.resource-name').innerText;
+            if (confirm('Are you sure you want to delete "' + resourceName + '"?')) {
+                gsap.to(resourceItem, {
+                    duration: 0.5,
+                    opacity: 0,
+                    x: 50,
+                    ease: 'power3.in',
+                    onComplete: () => resourceItem.remove()
+                });
+            }
+        }
+    </script>
+</body>
+</html>

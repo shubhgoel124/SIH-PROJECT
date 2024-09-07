@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Seminars</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --text-color: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .seminar {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .seminar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .seminar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .seminar:hover::before {
+            opacity: 1;
+        }
+
+        .seminar img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+            margin-right: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .seminar:hover img {
+            transform: scale(1.05);
+        }
+
+        .seminar-details {
+            flex: 1;
+        }
+
+        .seminar-title {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .seminar-date, .seminar-location {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .seminar-description {
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        .btn-register {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-register:hover {
+            background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        .btn-register::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn-register:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-color);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent-color);
+        }
+
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .seminar {
+                flex-direction: column;
+            }
+
+            .seminar img {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .seminar-title {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="floating-shapes"></div>
+        <h1>Faculty Seminars</h1>
+
+        <div class="seminar">
+            <img src="seminar.jpeg" alt="Seminar Image">
+            <div class="seminar-details">
+                <div class="seminar-title">Seminar on Data Science & Analytics</div>
+                <div class="seminar-date">Date: September 30, 2024</div>
+                <div class="seminar-location">Location: Seminar Hall A, IIIT Nagpur</div>
+                <div class="seminar-description">
+                    Learn the latest trends and technologies in data science and analytics. 
+                    This seminar will provide insights into modern techniques for handling large data sets and how they can be applied in various domains.
+                </div>
+                <button class="btn-register">Register Now</button>
+            </div>
+        </div>
+
+        <div class="seminar">
+            <img src="ai.jpeg" alt="Seminar Image">
+            <div class="seminar-details">
+                <div class="seminar-title">AI in Healthcare: Future Prospects</div>
+                <div class="seminar-date">Date: October 10, 2024</div>
+                <div class="seminar-location">Location: Seminar Hall B, IIIT Nagpur</div>
+                <div class="seminar-description">
+                    This seminar focuses on the advancements in AI technology and its impact on healthcare. 
+                    Learn from leading researchers how AI is revolutionizing diagnostics, treatment, and patient care.
+                </div>
+                <button class="btn-register">Register Now</button>
+            </div>
+        </div>
+
+        <div class="seminar">
+            <img src="cyber.jpeg" alt="Seminar Image">
+            <div class="seminar-details">
+                <div class="seminar-title">Cybersecurity: Protecting Digital Infrastructure</div>
+                <div class="seminar-date">Date: October 20, 2024</div>
+                <div class="seminar-location">Location: Seminar Hall C, IIIT Nagpur</div>
+                <div class="seminar-description">
+                    In an age of digital transformation, cybersecurity has become a critical field. 
+                    This seminar will cover the latest threats and defenses to safeguard digital infrastructure in organizations.
+                </div>
+                <button class="btn-register">Register Now</button>
+            </div>
+        </div>
+
+        <a href="in.html" class="back-link">Back to Dashboard</a>
+    </div>
+
+    <script>
+        
+        const floatingShapes = document.querySelector('.floating-shapes');
+        for (let i = 0; i < 50; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('shape');
+            shape.style.width = `${Math.random() * 20 + 5}px`;
+            shape.style.height = shape.style.width;
+            shape.style.left = `${Math.random() * 100}%`;
+            shape.style.top = `${Math.random() * 100}%`;
+            floatingShapes.appendChild(shape);
+        }
+
+        gsap.to('.shape', {
+            y: 'random(-100, 100)',
+            x: 'random(-100, 100)',
+            scale: 'random(0.5, 1.5)',
+            duration: 'random(10, 20)',
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut',
+            stagger: {
+                each: 0.1,
+                from: 'random'
+            }
+        });
+
+        gsap.from('.container', {
+            duration: 1.5,
+            opacity: 0,
+            y: 50,
+            scale: 0.9,
+            ease: 'elastic.out(1, 0.7)'
+        });
+
+        gsap.utils.toArray('.seminar').forEach((seminar, i) => {
+            gsap.from(seminar, {
+                duration: 1,
+                opacity: 0,
+                y: 50,
+                scale: 0.9,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: seminar,
+                    start: 'top bottom-=100',
+                    end: 'bottom center',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        gsap.utils.toArray('.btn-register').forEach((btn, i) => {
+            gsap.from(btn, {
+                duration: 0.5,
+                opacity: 0,
+                scale: 0.5,
+                ease: 'back.out(1.7)',
+                scrollTrigger: {
+                    trigger: btn,
+                    start: 'top bottom-=50',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+    </script>
+</body>
+</html>

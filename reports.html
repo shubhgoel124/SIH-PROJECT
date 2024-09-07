@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Reports - Admin</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --text-color: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        h1 {
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .filter-container select, 
+        .filter-container input {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            font-size: 1em;
+        }
+
+        .filter-container select:focus, 
+        .filter-container input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th {
+            background-color: var(--secondary-color);
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        .back-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>View Reports</h1>
+        <div class="filter-container">
+            <input type="text" id="searchInput" placeholder="Search by faculty name">
+            <select id="departmentFilter">
+                <option value="all">All Departments</option>
+                <option value="CSE">CSE</option>
+                <option value="ECE">ECE</option>
+                <option value="ME">ME</option>
+                <option value="Civil">Civil</option>
+            </select>
+            <select id="yearFilter">
+                <option value="all">All Years</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+            </select>
+        </div>
+
+        <div class="table-container">
+            <table id="reportTable">
+                <thead>
+                    <tr>
+                        <th>Faculty Name</th>
+                        <th>Department</th>
+                        <th>Year</th>
+                        <th>Report Type</th>
+                        <th>View Report</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dr. A. Sharma</td>
+                        <td>CSE</td>
+                        <td>2023</td>
+                        <td>Performance Review</td>
+                        <td><a href="#" class="action-btn">View</a></td>
+                    </tr>
+                    <tr>
+                        <td>Prof. B. Singh</td>
+                        <td>ECE</td>
+                        <td>2022</td>
+                        <td>Project Report</td>
+                        <td><a href="#" class="action-btn">View</a></td>
+                    </tr>
+                    <tr>
+                        <td>Dr. C. Rao</td>
+                        <td>ME</td>
+                        <td>2023</td>
+                        <td>Self Appraisal</td>
+                        <td><a href="#" class="action-btn">View</a></td>
+                    </tr>
+                    <tr>
+                        <td>Dr. D. Patel</td>
+                        <td>Civil</td>
+                        <td>2021</td>
+                        <td>Research Paper</td>
+                        <td><a href="#" class="action-btn">View</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="in.html" class="back-btn">Back to Dashboard</a>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const departmentFilter = document.getElementById('departmentFilter');
+        const yearFilter = document.getElementById('yearFilter');
+        const table = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
+
+        searchInput.addEventListener('input', filterTable);
+        departmentFilter.addEventListener('change', filterTable);
+        yearFilter.addEventListener('change', filterTable);
+
+        function filterTable() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedDepartment = departmentFilter.value;
+            const selectedYear = yearFilter.value;
+
+            for (let row of table.rows) {
+                const facultyName = row.cells[0].innerText.toLowerCase();
+                const department = row.cells[1].innerText;
+                const year = row.cells[2].innerText;
+
+                let matchesSearch = facultyName.includes(searchTerm);
+                let matchesDepartment = selectedDepartment === 'all' || department === selectedDepartment;
+                let matchesYear = selectedYear === 'all' || year === selectedYear;
+
+                if (matchesSearch && matchesDepartment && matchesYear) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

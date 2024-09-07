@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Performance - Admin</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --text-color: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            color: var(--text-color);
+        }
+
+        .container {
+            width: 80%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(30px);
+            position: relative;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 40px;
+        }
+
+        canvas {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--secondary-color);
+        }
+
+        td {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar {
+            height: 20px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0;
+            border-radius: 50px;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            padding: 15px 30px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin: 20px auto 0;
+            width: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: var(--accent-color);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Monitor Performance</h1>
+
+        <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Faculty Name</th>
+                    <th>Tasks Completed</th>
+                    <th>Ongoing Tasks</th>
+                    <th>Performance (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Dr. A. Sharma</td>
+                    <td>12</td>
+                    <td>2</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 85%;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Prof. B. Singh</td>
+                    <td>10</td>
+                    <td>4</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 70%;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Dr. C. Rao</td>
+                    <td>15</td>
+                    <td>1</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 95%;"></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Dr. D. Patel</td>
+                    <td>8</td>
+                    <td>3</td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 65%;"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="in.html" class="back-btn">Back to Dashboard</a>
+    </div>
+
+    <script>
+        
+        gsap.to('.container', {
+            duration: 1.5,
+            opacity: 1,
+            translateY: 0,
+            ease: 'power4.out'
+        });
+
+        gsap.from('.chart-container', {
+            duration: 1,
+            opacity: 0,
+            y: 30,
+            ease: 'power2.out'
+        });
+
+        gsap.from('table', {
+            duration: 1,
+            opacity: 0,
+            y: 30,
+            delay: 0.5,
+            ease: 'power2.out'
+        });
+
+        gsap.from('.progress-bar', {
+            duration: 1,
+            opacity: 0,
+            y: 30,
+            stagger: 0.3,
+            ease: 'power2.out'
+        });
+
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Dr. A. Sharma', 'Prof. B. Singh', 'Dr. C. Rao', 'Dr. D. Patel'],
+                datasets: [{
+                    label: 'Tasks Completed',
+                    data: [12, 10, 15, 8],
+                    backgroundColor: 'rgba(60, 162, 235, 0.7)',
+                    borderColor: 'rgba(60, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Ongoing Tasks',
+                    data: [2, 4, 1, 3],
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutBounce'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
+            }
+        });
+
+        gsap.utils.toArray('.progress').forEach((bar) => {
+            gsap.fromTo(bar, {
+                width: '0%'
+            }, {
+                width: bar.style.width,
+                duration: 1,
+                ease: 'power2.out'
+            });
+        });
+
+    </script>
+</body>
+</html>

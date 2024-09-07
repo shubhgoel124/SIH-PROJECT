@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty/Admin Selection</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --accent-color: #60a5fa;
+            --text-color: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container, .password-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--text-color);
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-color);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.4s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-faculty {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-admin {
+            background-color: var(--accent-color);
+        }
+
+        .password-container {
+            display: none;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            background-color: var(--secondary-color);
+        }
+
+        .submit-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .error-message {
+            color: red;
+            font-size: 1.2em;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Type</h1>
+        <div class="button-container">
+            <button class="btn btn-faculty" id="facultyBtn">Faculty</button>
+            <button class="btn btn-admin" id="adminBtn">Admin</button>
+        </div>
+    </div>
+
+    <div class="password-container" id="passwordContainer">
+        <h1>Enter Admin Password</h1>
+        <input type="password" class="password-input" id="adminPassword" placeholder="Enter Password">
+        <button class="btn submit-btn" id="submitPassword">Submit</button>
+        <div class="error-message" id="errorMessage">Incorrect password, please try again.</div>
+    </div>
+
+    <script>
+        const correctPassword = "1";
+        const passwordContainer = document.getElementById('passwordContainer');
+        const container = document.querySelector('.container');
+        const errorMessage = document.getElementById('errorMessage');
+
+        document.getElementById('facultyBtn').addEventListener('click', () => {
+            window.location.href = 'faculty.html';
+        });
+
+        document.getElementById('adminBtn').addEventListener('click', () => {
+            container.style.display = 'none';
+            passwordContainer.style.display = 'block';
+        });
+
+        document.getElementById('submitPassword').addEventListener('click', () => {
+            const enteredPassword = document.getElementById('adminPassword').value;
+            if (enteredPassword === correctPassword) {
+                window.location.href = 'admin.html';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
